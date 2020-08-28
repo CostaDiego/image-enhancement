@@ -34,7 +34,7 @@ During the development process, the following set of images were used as samples
 
 ### Generating the gitignore file for multiple languages
 
-The [gitignore](.gitignore) file were generated using the [gitignore.io](https://www.gitignore.io/) website.
+The [.gitignore](.gitignore) file were generated using the [gitignore.io](https://www.gitignore.io/) website.
 
 ## References
 
