@@ -1,0 +1,5 @@
+import cv2
+
+
+CLAHE_CLIP_LIMIT = 3.0
+CLAHE_TILE_GRID_SIZE = (8,8)
