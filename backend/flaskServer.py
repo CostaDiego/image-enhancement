@@ -1,32 +1,19 @@
-from flask import Flask
-from flask import request
-import requests
+from flask import Flask, jsonify
+from flask import request, send_file, send_from_directory, safe_join, abort
 import subprocess
 import json
 import time
 
 
 PORT = 8123
-HOST = 'localhost'
+HOST = '0.0.0.0'
 
 app = Flask(__name__)
 
 
-@app.route("/", methods=['POST'])
+@app.route("/", methods=['GET'])
 def index():
-    return "Relow"
-
-def notify(message):
-    payload = {'text' : message}
-    r = requests.post(payload_url, data=json.dumps(payload))
-
-def execute_script(script):
-    cmd = ["powershell","-ExecutionPolicy", "Bypass", "C:\\deploy\\{0}.ps1".format(script)]
-    p = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-    out,err = p.communicate()
-    if(err):
-        raise Exception('Error: ' + str(err))
-    return out
+    return jsonify({"message":"Hello Json!"})
 
 if __name__ == "__main__":
     app.run(port = PORT, host = HOST, debug=True, threaded=True)
