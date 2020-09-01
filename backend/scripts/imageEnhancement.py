@@ -28,3 +28,16 @@ def applyCLAHE(
     claheFinalImage = cv2.cvtColor(claheLABImage, cv2.COLOR_LAB2BGR)
 
     return claheFinalImage
+
+def applyRedFree(image):
+    if isinstance(image, str):
+        image = cv2.imread(image)
+        
+    #-----Split Channels--------------------------------------------------------
+    bChannel, gChannel, rChannel = cv2.split(image)
+    rChannel[:] = 0
+
+    #-----Merge the Green and BLue Channel--------------------------------------
+    imageBG = cv2.merge((bChannel,bChannel,rChannel))
+    
+    return imageBG
