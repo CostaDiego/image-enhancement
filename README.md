@@ -1,4 +1,4 @@
-# Image Enhancement
+# Retina Image Enhancement
 This work shows the approach used to build and deploy a image enhancement service using mainly Docker e OpenCV, along with the required scripts needed to deploy a web service.
 
 ## Install
