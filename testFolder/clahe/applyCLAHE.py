@@ -8,36 +8,37 @@ IMG_DEFALT_SIZE = (360,480)
 
 
 parser = argparse.ArgumentParser(description='Script to Apply CLAHE on RGB Images.')
+
 parser.add_argument(
-    '-P','--path',
+    'path',
     type=str,
     help='The path to load the image.')
 
 parser.add_argument(
     '-S',
-    '--saveImage',
-    type=bool,
-    default=False,
-    help='Defines if the image will be saved.')
+    '--save',
+    type=str,
+    default=None,
+    required=False,
+    help='The local where the image will be saved.')
 
 parser.add_argument(
     '--showImage',
-    type=bool,
-    default=True,
+    type=str,
+    default="True",
+    required=False,
     help='If true shows the image.')
 
 
 def applyCLAHE(
     image,
+    save,
     showImage,
     clipLimit=CLAHE_CLIP_LIMIT,
     tileGridSize=CLAHE_TILE_GRID_SIZE,
     size = IMG_DEFALT_SIZE):
 
-    if isinstance(image, str):
-        image = cv2.imread(image)
-    else:
-        raise TypeError("Expect string path.")
+    image = cv2.imread(image)
 
     #-----Converting image to LAB Color model----------------------------------- 
     labImage = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
@@ -57,16 +58,34 @@ def applyCLAHE(
 
     #-----Show the image--------------------------------------------------------
     if showImage:
+        sourceImage  = copy.deepcopy(image)
+        sourceImage = cv2.resize(sourceImage,size)
+
         resizedImage = copy.deepcopy(claheFinalImage)
-        resizedImage = cv2.resize(claheFinalImage,size)
+        resizedImage = cv2.resize(resizedImage,size)
+
+        cv2.imshow('Source Image', sourceImage)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
 
         cv2.imshow('CLAHE Output', resizedImage)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+    
+    if save:
+        cv2.imwrite(save, claheFinalImage) 
 
     return claheFinalImage
 
 if __name__ == '__main__':
     args = parser.parse_args()
+    path = args.path
+    save = args.save
 
-    applyCLAHE(args.path, args.showImage)
+    if args.showImage.upper() == 'TRUE' or args.showImage.upper() == 'T':
+        showImage = True
+    else:
+        showImage = False
+
+    applyCLAHE(path, save, showImage)
