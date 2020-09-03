@@ -3,17 +3,21 @@ from flask import request, send_file, send_from_directory, safe_join, abort
 import subprocess
 import json
 import time
+import os
 
+# PORT = 8123
+# HOST = 'localhost'
 
-PORT = 8123
-HOST = '0.0.0.0'
+api = Flask(__name__)
+api.config.from_object("config.DevelopmentConfig")
 
-app = Flask(__name__)
+def _prepareEnv():
+    pass
 
-
-@app.route("/", methods=['GET'])
+@api.route("/", methods=['GET'])
 def index():
-    return jsonify({"message":"Hello Json!"})
+    return api.config['SECRET_KEY']
 
 if __name__ == "__main__":
-    app.run(port = PORT, host = HOST, debug=True, threaded=True)
+    # api.run(port = PORT, host = HOST, debug=True, threaded=True)
+    api.run(port=api.config['PORT'], host= api.config['HOST'])
