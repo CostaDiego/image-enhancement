@@ -149,5 +149,13 @@ ipython_config.py
 # *.code-workspace
 
 ### Project ###
-# Ignore the data folder
-/data
+# Ignore the dataset folder
+/dataset
+
+# Ignore the dynamic upload and download files, data and metadata
+backend/data/upload
+backend/data/download
+backend/data/*metadata*
+
+# Ignore the prototyping jupyter notebook
+prototyping.ipynb
