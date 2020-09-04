@@ -14,6 +14,10 @@ class Config(object):
 class ProductionConfig(Config):
     HOST = 'localhost'
     PORT = 5000
+    URL = 'http://{host}:{port}'.format(
+        host = HOST,
+        port = PORT
+    )
     SECRET_KEY = os.urandom(_KEY_SIZE)
 
 class DevelopmentConfig(Config):
@@ -21,6 +25,10 @@ class DevelopmentConfig(Config):
     DEBUG = True
     HOST = 'localhost'
     PORT = 8080
+    URL = 'http://{host}:{port}'.format(
+        host = HOST,
+        port = PORT
+    )
     SECRET_KEY = os.urandom(_KEY_SIZE)
     SESSION_COOKIE_SECURE = False
 
@@ -29,5 +37,9 @@ class TestingConfig(Config):
     TESTING = True
     HOST = 'localhost'
     PORT = 8080
+    URL = 'http://{host}:{port}'.format(
+        host = HOST,
+        port = PORT
+    )
     SECRET_KEY = os.urandom(_KEY_SIZE)
     SESSION_COOKIE_SECURE = False

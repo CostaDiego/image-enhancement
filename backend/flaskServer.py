@@ -7,18 +7,26 @@ import subprocess
 import json
 import os
 
-api = Flask(__name__)
-# api.config.from_object("config.DevelopmentConfig")
 
-parser = argparse.ArgumentParser(
+_LOG_FILE = 'flaskServer.log'
+
+api = Flask(__name__)
+
+logging.basicConfig(
+        filename=_LOG_FILE,
+        level=logging.INFO,
+        filemode='a',
+        format='%(asctime)s %(message)s')
+
+_parser = argparse.ArgumentParser(
     description='Start Flask Server')
 
-parser.add_argument(
+_parser.add_argument(
     '-E',
     '--env',
     type=str,
     default='production',
-    choices = ['development', 'production'],
+    choices = ['development', 'production', 'testing'],
     help='The local where the image will be saved.')
 
 def _prepareEnv(downloadDirectory = None, uploadDirectory = None):
@@ -58,6 +66,13 @@ def list_files():
 @api.route("/files/<path:path>", methods=['GET'])
 def get_file(path):
     """Download a file."""
+    logging.info('Receiving a GET request.')
+    logging.info('Requesting file: {}'.format(
+        os.path.join(
+            api.config['UPLOAD_DIRECTORY'],
+            path,
+        )
+    ))
     return send_from_directory(
                 api.config['UPLOAD_DIRECTORY'],
                 path,
@@ -68,14 +83,21 @@ def get_file(path):
 @api.route("/files/<filename>", methods=['POST'])
 def post_file(filename):
     """Upload a file."""
-
+    logging.info('Receiving a POST request.')
     if "/" in filename:
         # Return 400 BAD REQUEST
-        abort(400, "no directories allowed")
+        logging.warning('Bad Request. No Directories Allowed.')
+        abort(400, "No directories allowed")
 
     with open(os.path.join(api.config['DOWNLOAD_DIRECTORY'], filename), "wb") as fp:
         fp.write(request.data)
 
+    logging.info('File Received: {}'.format(
+        os.path.join(
+            api.config['DOWNLOAD_DIRECTORY'],
+            filename
+        )
+    ))
     # Return 201 CREATED
     return "", 201
 
@@ -89,25 +111,20 @@ def post_file(filename):
 ###--------------Future Approach to grant safer way to post images ---------
 
 
-if __name__ == "__main__":
-    logging.basicConfig(
-        filename='flaskServer.log',
-        level=logging.INFO,
-        format='%(asctime)s %(message)s')
-
-    args = parser.parse_args()
+if __name__ == "__main__": 
+    args = _parser.parse_args()
 
     if args.env.lower() == 'development':
         api.config.from_object("config.DevelopmentConfig")
-        # logging.info('Loading configuration. ENV: {}'.format(api.config['ENV']))
+        logging.info('Loading configuration. ENV: {}'.format(api.config['ENV']))
 
     if args.env.lower() == 'testing':
         api.config.from_object("config.TestingConfig")
-        # logging.info('Loading configuration. ENV: {}'.format(api.config['ENV']))
+        logging.info('Loading configuration. ENV: {}'.format(api.config['ENV']))
 
     if args.env.lower() == 'production':
         api.config.from_object("config.ProductionConfig")
-        # logging.info('Loading configuration. ENV: {}'.format(api.config['ENV']))
+        logging.info('Loading configuration. ENV: {}'.format(api.config['ENV']))
 
     try:
         _prepareEnv(
