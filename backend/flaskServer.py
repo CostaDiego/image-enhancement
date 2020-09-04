@@ -1,10 +1,10 @@
-from flask import Flask, request, abort, jsonify
+from flask import Flask, request, redirect, abort
 from flask import send_file, send_from_directory, safe_join
+from flask import render_template, jsonify
 import logging
 import argparse
 import subprocess
 import json
-import time
 import os
 
 api = Flask(__name__)
@@ -38,10 +38,56 @@ def _prepareEnv(downloadDirectory = None, uploadDirectory = None):
     return (True if response['DOWNLOAD'] else False,
             True if response['UPLOAD'] else False)
 
+
 @api.route("/", methods=['GET'])
 def hello():
     response = "Hello, If you are seeing this, means the server is online!\n"
     return response
+
+
+@api.route("/files")
+def list_files():
+    """Endpoint to list files on the server."""
+    files = []
+    for filename in os.listdir(api.config['UPLOAD_DIRECTORY']):
+        path = os.path.join(api.config['UPLOAD_DIRECTORY'], filename)
+        if os.path.isfile(path):
+            files.append(filename)
+    return jsonify(files)
+
+@api.route("/files/<path:path>", methods=['GET'])
+def get_file(path):
+    """Download a file."""
+    return send_from_directory(
+                api.config['UPLOAD_DIRECTORY'],
+                path,
+                as_attachment=True
+            )
+
+
+@api.route("/files/<filename>", methods=['POST'])
+def post_file(filename):
+    """Upload a file."""
+
+    if "/" in filename:
+        # Return 400 BAD REQUEST
+        abort(400, "no directories allowed")
+
+    with open(os.path.join(api.config['DOWNLOAD_DIRECTORY'], filename), "wb") as fp:
+        fp.write(request.data)
+
+    # Return 201 CREATED
+    return "", 201
+
+
+###--------------Future Approach to grant safer way to post images ---------
+# @api.route('/upload-image', methods=['GET', 'POST'])
+# @api.route('/download-image', methods=['GET', 'POST'])
+# def traffic_handler():
+#     return request.url
+#     return "The request reached the handler method!"
+###--------------Future Approach to grant safer way to post images ---------
+
 
 if __name__ == "__main__":
     logging.basicConfig(
