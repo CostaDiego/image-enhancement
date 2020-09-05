@@ -10,6 +10,7 @@ class Config(object):
     DOWNLOAD_DIRECTORY = "data/download"
     SESSION_COOKIE_SECURE = True
     THREADED = True
+    ALLOWED_IMG_FORMATS = ['JPG','JPEG','PNG','TIF','TIFF','BMP']
 
 class ProductionConfig(Config):
     HOST = 'localhost'

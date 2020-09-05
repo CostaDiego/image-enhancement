@@ -30,6 +30,7 @@ _parser.add_argument(
     help='The local where the image will be saved.')
 
 def _prepareEnv(downloadDirectory = None, uploadDirectory = None):
+
     logging.info('Performing Environment Check')
     response = {'DOWNLOAD': None, 'UPLOAD': None}
 
@@ -49,6 +50,7 @@ def _prepareEnv(downloadDirectory = None, uploadDirectory = None):
 
 @api.route("/", methods=['GET'])
 def hello():
+
     response = "Hello, If you are seeing this, means the server is online!\n"
     return response
 
@@ -56,15 +58,18 @@ def hello():
 @api.route("/files")
 def list_files():
     """Endpoint to list files on the server."""
+
     files = []
     for filename in os.listdir(api.config['UPLOAD_DIRECTORY']):
         path = os.path.join(api.config['UPLOAD_DIRECTORY'], filename)
+
         if os.path.isfile(path):
             files.append(filename)
+
     return jsonify(files)
 
 @api.route("/files/<path:path>", methods=['GET'])
-def get_file(path):
+def get_file(path, attached = False):
     """Download a file."""
     logging.info('Receiving a GET request.')
     logging.info('Requesting file: {}'.format(
@@ -73,20 +78,27 @@ def get_file(path):
             path,
         )
     ))
-    return send_from_directory(
+
+    try:
+        return send_from_directory(
                 api.config['UPLOAD_DIRECTORY'],
                 path,
-                as_attachment=True
+                as_attachment=attached
             )
+    except FileNotFoundError as err:
+        logging.error('The Following Error Occured: {}'.format(err))
+        abort(404)
 
 
 @api.route("/files/<filename>", methods=['POST'])
 def post_file(filename):
     """Upload a file."""
+
     logging.info('Receiving a POST request.')
     if "/" in filename:
-        # Return 400 BAD REQUEST
         logging.warning('Bad Request. No Directories Allowed.')
+
+        # Return 400 BAD REQUEST
         abort(400, "No directories allowed")
 
     with open(os.path.join(api.config['DOWNLOAD_DIRECTORY'], filename), "wb") as fp:
@@ -98,6 +110,7 @@ def post_file(filename):
             filename
         )
     ))
+
     # Return 201 CREATED
     return "", 201
 
