@@ -3,8 +3,6 @@ from flask import send_file, send_from_directory, safe_join
 from flask import render_template, jsonify
 import logging
 import argparse
-import subprocess
-import json
 import os
 
 
