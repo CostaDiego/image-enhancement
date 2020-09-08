@@ -153,9 +153,9 @@ ipython_config.py
 /dataset
 
 # Ignore the dynamic upload and download files, data and metadata
-backend/data/upload
-backend/data/download
-backend/data/*metadata*
+backend/api/data/upload*
+backend/api/data/download*
+backend/api/data/*metadata*
 
 # Ignore the prototyping jupyter notebook
 prototyping.ipynb
