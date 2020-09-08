@@ -50,8 +50,7 @@ def _prepareEnv(downloadDirectory = None, uploadDirectory = None):
 
 @api.route("/", methods=['GET'])
 def hello():
-
-    response = "Hello, If you are seeing this, means the server is online!\n"
+    response = "<h1 style='color:blue'>Hello, If you are seeing this, means the server is online!</h1>\n"
     return response
 
 
