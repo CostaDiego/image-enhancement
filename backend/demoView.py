@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import cv2
 
-from engine.imageEnhancement import applyCLAHE, applyRedFree
+from api.engine.imageEnhancement import applyCLAHE, applyRedFree
 
 st.title('Image Enhancement Demo')
 
@@ -14,7 +14,7 @@ def getImage(imagePath: str):
     return image
 
 image_load_state = st.text('Loading Demo Image...')
-image = getImage('data/dataSample/demoImage.JPG')
+image = getImage('api/data/dataSample/demoImage.JPG')
 image_load_state.text("Done! (using st.cache)")
 
 st.subheader('Source Image')
