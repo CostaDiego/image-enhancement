@@ -38,6 +38,6 @@ def applyRedFree(image):
     rChannel[:] = 0
 
     #-----Merge the Green and BLue Channel--------------------------------------
-    imageBG = cv2.merge((bChannel,bChannel,rChannel))
+    imageBG = cv2.merge((bChannel,gChannel,rChannel))
     
     return imageBG
